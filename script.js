@@ -85,13 +85,9 @@ basketList.fetchData(() => {
 const showBasket = () => {
   let basketListStr = [];
 
-  basketList.products.contents.forEach(product => {
+  basketList.products.contents.forEach((product) => {
     basketListStr.push(`${product.product_name}: ${product.price}`);
-  })
+  });
 
-  alert(
-    JSON.stringify(
-      basketListStr
-    )
-  );
+  alert(JSON.stringify(basketListStr));
 };
