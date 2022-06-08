@@ -11,16 +11,11 @@ const GET_PRODUCTS_URL = `${BASE_URL}/catalogData.json`;
 const GET_BASKET_URL = `${BASE_URL}/getBasket.json`;
 
 function service(url, callback) {
-  const xhr = new XMLHttpRequest();
-
-  xhr.open("GET", url);
-
-  const onLoadHandler = () => {
-    callback(JSON.parse(xhr.response));
-  };
-
-  xhr.onload = onLoadHandler;
-  xhr.send();
+  fetch(url).then((responce) => {
+    responce.json().then((data) => {
+      callback(data);
+    });
+  });
 }
 
 class GoodsItem {
@@ -41,10 +36,9 @@ class GoodsItem {
 class GoodsBasket {
   basketItems = [];
 
-  fetchData(callback) {
+  fetchData() {
     service(GET_BASKET_URL, (products) => {
       this.products = products;
-      callback();
     });
   }
 }
@@ -52,10 +46,16 @@ class GoodsBasket {
 class GoodsList {
   products = [];
 
-  fetchData(callback) {
-    service(GET_PRODUCTS_URL, (products) => {
-      this.products = products;
-      callback();
+  fetchData() {
+    return new Promise((resolve, reject) => {
+      service(GET_PRODUCTS_URL, (products) => {
+        this.products = products;
+        if (this.products.length > 0) {
+          resolve();
+        } else {
+          reject();
+        }
+      });
     });
   }
 
@@ -72,7 +72,7 @@ class GoodsList {
 
 const goodsList = new GoodsList();
 
-goodsList.fetchData(() => {
+goodsList.fetchData().then(() => {
   goodsList.render();
 });
 
