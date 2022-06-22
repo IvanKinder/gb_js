@@ -35,3 +35,19 @@ h1 {
     margin: 10px;
     padding: 10px;
 }
+.err-msg {
+    position: absolute;
+    top: 90%;
+    border: 1px solid red;
+    padding: 5px;
+}
+
+.err-enter-active,
+.err-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.err-enter-from,
+.err-leave-to {
+  opacity: 0;
+}
