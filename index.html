@@ -14,35 +14,15 @@
         <button class="cart-button" @click="setBasketVisibility">
           Корзина
         </button>
-        <input
-          class="search-field"
-          type="text"
-          v-model="searchValue"
-          placeholder="search product"
-        />
+        <search-field v-model="searchValue"></search-field>
       </header>
       <main>
-        <div class="basket" v-show="isVisibleCart">
-          <div class="basket-list">
-            <div
-              class="basket-item"
-              v-for="{product_name, price} in filteredProducts"
-            >
-              <h3>{{ product_name }}</h3>
-              <p>{{ price }}</p>
-            </div>
-          </div>
-        </div>
+        <basket v-show="isVisibleCart"></basket>
         <div class="goods-list">
-          <div
-            class="goods-item"
-            v-for="{product_name, price} in filteredProducts"
-          >
-            <h3>{{ product_name }}</h3>
-            <p>{{ price }}</p>
-          </div>
+          <good v-for="item in filteredProducts" :item="item"></good>
         </div>
       </main>
+      <err-msg v-show="serverError"></err-msg>
     </div>
   </body>
 </html>
