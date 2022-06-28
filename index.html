@@ -17,15 +17,9 @@
         <search-field v-model="searchValue"></search-field>
       </header>
       <main>
-        <basket v-show="isVisibleCart" :items="filteredProducts"></basket>
+        <basket v-show="isVisibleCart"></basket>
         <div class="goods-list">
-          <div
-            class="goods-item"
-            v-for="{product_name, price} in filteredProducts"
-          >
-            <h3>{{ product_name }}</h3>
-            <p>{{ price }}</p>
-          </div>
+          <good v-for="item in filteredProducts" :item="item"></good>
         </div>
       </main>
       <err-msg v-show="serverError"></err-msg>

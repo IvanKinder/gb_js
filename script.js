@@ -1,15 +1,42 @@
-const BASE_URL =
-  "https://raw.githubusercontent.com/GeekBrainsTutorial/online-store-api/master/responses";
-const GET_PRODUCTS_URL = `${BASE_URL}/catalogData.json`;
-const GET_BASKET_URL = `${BASE_URL}/getBasket.json`;
+const BASE_URL = "http://localhost:3000/";
+const GET_PRODUCTS_URL = `${BASE_URL}goods.json`;
+const GET_BASKET_URL = `${BASE_URL}basket`;
 
 window.onload = () => {
+  function service(url, callback) {
+    fetch(url)
+      .then((responce) => {
+        responce.json().then((data) => {
+          callback(data);
+        });
+      })
+      .catch(() => {
+        this.serverError = true;
+        setTimeout(() => (this.serverError = false), 3000);
+      });
+  }
+
   Vue.component("good", {
     props: ["item"],
     template: `
     <div class="basket-item">
       <h3>{{ item.product_name }}</h3>
       <p>{{ item.price }}</p>
+      <div>
+        <button>Добавить</button>
+        <button>Удалить</button>
+      </div>
+    </div>
+    `,
+  });
+
+  Vue.component("basket-good", {
+    props: ["item"],
+    template: `
+    <div class="basket-item">
+      <h3>{{ item.product_name }}</h3>
+      <p>Цена: {{ item.price }}</p>
+      <p>Количество: {{ item.count }}</p>
     </div>
     `,
   });
@@ -28,14 +55,23 @@ window.onload = () => {
   });
 
   Vue.component("basket", {
-    props: ["items"],
+    data() {
+      return {
+        basketItems: [],
+      };
+    },
     template: `
     <div class="basket">
       <div class="basket-list">
-        <good v-for="item in items" :item="item"></good>
+        <basket-good v-for="item in basketItems" :item="item"></basket-good>
       </div>
     </div>
     `,
+    mounted() {
+      service(GET_BASKET_URL, (baskenList) => {
+        this.basketItems = baskenList;
+      });
+    },
   });
 
   Vue.component("err-msg", {
@@ -61,23 +97,11 @@ window.onload = () => {
       serverError: false,
     },
     mounted() {
-      this.service(GET_PRODUCTS_URL, (products) => {
+      service(GET_PRODUCTS_URL, (products) => {
         this.products = products;
       });
     },
     methods: {
-      service(url, callback) {
-        fetch(url)
-          .then((responce) => {
-            responce.json().then((data) => {
-              callback(data);
-            });
-          })
-          .catch(() => {
-            this.serverError = true;
-            setTimeout(() => (this.serverError = false), 3000);
-          });
-      },
       getTitle() {
         return "eShop";
       },
